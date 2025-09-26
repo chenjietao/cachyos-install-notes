@@ -92,9 +92,12 @@ sudo trust anchor --store ~/.local/share/Steam++/Plugins/Accelerator/SteamTools.
 
 ```bash
 paru -S easyconnect
-# 允许修改conf文件夹
-sudo chown -R $(whoami):$(whoami) /usr/share/sangfor/EasyConnect/resources/conf
-# 若出现系统托盘图标变成浮动窗口，试试删除 ~/.config/Electron 目录
+# 使程序能记住当前用户的设置
+echo "{}" > "~/setting_$(whoami).json"
+sudo mv "~/setting_$(whoami).json" /usr/share/sangfor/EasyConnect/resources/conf/
+sudo chown $(whoami):$(whoami) /usr/share/sangfor/EasyConnect/resources/conf/setting_$(whoami).json
+# 若出现系统托盘图标变成浮动窗口，编辑/usr/share/sangfor/EasyConnect/resources/conf/easy_connect.json，将sys_type的值改为neokylin
+sudo set -i 's/"sys_type": ".*"/"sys_type": "neokylin"/' /usr/share/sangfor/EasyConnect/resources/conf/easy_connect.json
 ```
 
 # 安装影音软件

@@ -21,7 +21,7 @@ sudo pacman -S fcitx5 fcitx5-rime fcitx5-gtk fcitx5-qt fcitx5-configtool rime-do
 sudo pacman -S noto-fonts-cjk noto-fonts-extra noto-fonts-emoji adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming ttf-jetbrains-mono-nerd ttf-roboto ttf-fira-code adobe-source-code-pro-fonts
 ```
 
-(KDE设置)批量将字体调整成"Noto Sans CN"，大小为13pt，等宽字体设置成"Jetbrains Mono Nerd Font"，启用抗锯齿处理，次像素渲染方式-RGB，轮廓微调-轻微
+(KDE设置)批量将字体调整成"Noto Sans CJK SC"，大小为13pt，等宽字体设置成"JetBrainsMono Nerd Font Mono"，启用抗锯齿处理，次像素渲染方式-RGB，轮廓微调-轻微
 
 > 字体配置参考文档： https://github.com/davgar99/arch-linux-font-improvement-guide
 
@@ -29,7 +29,7 @@ sudo pacman -S noto-fonts-cjk noto-fonts-extra noto-fonts-emoji adobe-source-han
 
 ```bash
 paru -S plasma6-themes-orchis-kde-git
-sudo pacman -S kvantum tela-circle-icon-theme-all gtk-engines gtk-engine-murrine orichis-theme vimx-cursors
+sudo pacman -S kvantum tela-circle-icon-theme-all gtk-engines gtk-engine-murrine orchis-theme vimx-cursors
 ```
 全局主题改为Orchis，应用程序外观设置为kvantum，Gnome/GTK外观为Orchis，Kvantum管理器中将主题切换成Orchis，光标改为Vimix Cursors，图标改为Tela circle系列主题
 
@@ -86,6 +86,14 @@ paru -S watt-toolkit-bin
 # 配置
 sudo chmod a+w /etc/hosts
 sudo trust anchor --store ~/.local/share/Steam++/Plugins/Accelerator/SteamTools.Certificate.cer
+
+# 安装证书失败或者一键加速报错的解决方案
+rm -r ~/.pki/nssdb
+mkdir -p ~/.pki/nssdb
+chmod 700 ~/.pki/nssdb
+certutil -d sql:$HOME/.pki/nssdb -N
+# 此命令会创建一个新的证书数据库，并要求设置密码。完成后，重新导入证书即可
+sudo update-ca-trust
 ```
 
 # 安装EasyConnect

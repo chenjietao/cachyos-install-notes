@@ -1,0 +1,19 @@
+patch:
+  schema_list:
+    - {schema: double_pinyin_flypy}
+    - {schema: luna_pinyin_simp}
+  switcher:
+    abbreviate_options: true
+    caption: "〔方案选单〕"
+    fold_options: true
+    hotkeys: ["Control+grave", "Control+Shift+grave", "Control+semicolon"]
+    option_list_separator: "／"
+  ascii_composer:
+    good_old_caps_lock: true
+    switch_key:
+      Shift_L: commit_code
+      Shift_R: inline_ascii
+      Control_L: noop
+      Control_R: noop
+      Caps_Lock: commit_text
+      Eisu_toggle: clear

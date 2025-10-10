@@ -33,6 +33,8 @@ sudo pacman -S kvantum tela-circle-icon-theme-all gtk-engines gtk-engine-murrine
 ```
 全局主题改为Orchis，应用程序外观设置为kvantum，Gnome/GTK外观为Orchis，Kvantum管理器中将主题切换成Orchis，光标改为Vimix Cursors，图标改为Tela circle系列主题
 
+窗口管理-桌面特效：勾选【窗口惯性晃动】【窗口透明度】【对话框显隐过渡】并应用
+
 # 安装指纹解锁支持
 
 [参考文档](https://blog.ucatch.me/post/archlinux-use-fingerprint)
@@ -170,3 +172,6 @@ sudo systemctl enable --now iptables.service
 > qemu-hooks脚本: https://github.com/PassthroughPOST/VFIO-Tools/blob/master/libvirt_hooks/qemu
 > 
 > hooks脚本参考：https://github.com/Thanatoslayer6/hd7730-singlegpu-passthrough
+
+（针对systemd-boot）修改了`/boot/loader/entries/xxx.conf`的内核启动参数后，如果以后更新系统时升级了内核，本次修改的启动参数会被覆盖，解决办法是：
+修改`/etc/sdboot-manage.conf`，在`LINUX_OPTIONS=`行中加入需要添加的启动参数。

@@ -69,9 +69,21 @@ paru -S  pam-fprint-grosshack
 # 安装办公软件
 
 ```bash
-sudo pacman -S wps-office
 # 安装markdown编辑器
 sudo pacman -S ghostwriter
+# sudo pacman -S wps-office # 虽然cachyos的官方仓库中有wps的包，但实际使用下来发现其中文支持不太好，部分加粗的中文文字会变成黑块，最好是从AUR安装wps-office-cn
+paru -S wps-office-cn
+# 安装中文界面
+paru -S wps-office-mui-zh-cn
+# 其实安装完wps-office-cn之后，在~/.cache/paru/clone/wps-office-cn/下已经存在wps-office-mui-zh-cn的本地安装包，可以直接使用pacman -U 安装，顺便将wps-office-mime-cn也安装了
+sudo pacman -U ~/.cache/paru/clone/wps-office-cn/wps-office-m*
+# 安装字体支持
+paru -S wps-office-fonts ttf-wps-fonts
+# fcitx5输入法支持
+mkdir -p ~/.local/share/applications && cp /usr/share/applications/wps-office*.desktop ~/.local/share/applications/
+cd ~/.local/share/applications
+ls -1 wps-office*.desktop |xargs sed -i 's/Exec=/Exec=env XMODIFIERS="@im=fcitx" GTK_IM_MODULE="fcitx" QT_IM_MODULE="fcitx" SDL_IM_MODULE=fcitx GLFW_IM_MODULE=ibus /'
+update-desktop-database ~/.local/share/applications/
 ```
 
 # 安装zen浏览器

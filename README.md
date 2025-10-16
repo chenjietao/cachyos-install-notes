@@ -1,189 +1,260 @@
-# cachyos-install-notes
-CachyOS系统安装后的配置记录
+# CachyOS 系统（KDE桌面）安装后配置指南
 
-# 安装输入法
+本文档记录了本人的CachyOS系统（KDE桌面环境）安装后的常用配置步骤，帮助本人快速搭建完整可用的桌面环境。配置内容包括输入法、字体、主题美化、办公软件等常用功能。
+
+---
+
+## 输入法配置
+
+安装配置Fcitx5输入法框架，支持中文输入(我使用的是Rime的双拼输入法)：
 
 ```bash
 sudo pacman -S fcitx5 fcitx5-rime fcitx5-gtk fcitx5-qt fcitx5-configtool rime-double-pinyin
 ```
 
-- (KDE设置)将虚拟键盘设置成"Fcitx 5 Wayland 启动器"
+### Fcitx环境变量设置
+1. 在KDE设置中将虚拟键盘设置成"Fcitx 5 Wayland 启动器"
+2. 编辑`/etc/environment`，添加一行：
+   ```
+   XMODIFIERS=@im=fcitx
+   ```
 
-- 编辑`/etc/environment`，添加一行 `XMODIFIERS=@im=fcitx`
+### 解决GTK3应用输入法兼容性问题
+部分GTK应用(如VSCode/Chromium)使用Fcitx5输入法时可能出现漏字母问题，解决方案：
 
-- 修复VSCode/Chromium等Gtk3软件使用fcitx5输入拼音出现漏字母的问题：
-	- 编辑 `~/.config/gtk-3.0/settings.ini` 添加一行 `gtk-im-module=fcitx`
-	- 编辑 `~/.gtkrc-2.0` 添加一行 `gtk-im-module="fcitx"`
+1. 编辑 `~/.config/gtk-3.0/settings.ini` 添加：
+   ```
+   gtk-im-module=fcitx
+   ```
+2. 编辑 `~/.gtkrc-2.0` 添加：
+   ```
+   gtk-im-module="fcitx"
+   ```
 
-# 安装字体
+---
+
+## 字体安装
+
+安装常用中文字体和编程字体，确保系统显示效果良好：
 
 ```bash
-sudo pacman -S noto-fonts-cjk noto-fonts-extra noto-fonts-emoji adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming ttf-jetbrains-mono-nerd ttf-roboto ttf-fira-code adobe-source-code-pro-fonts
+sudo pacman -S noto-fonts-cjk noto-fonts-extra noto-fonts-emoji \
+adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts \
+wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei \
+ttf-arphic-ukai ttf-arphic-uming ttf-jetbrains-mono-nerd \
+ttf-roboto ttf-fira-code adobe-source-code-pro-fonts
 ```
 
-(KDE设置)批量将字体调整成"Noto Sans CJK SC"，大小为13pt，等宽字体设置成"JetBrainsMono Nerd Font Mono"，启用抗锯齿处理，次像素渲染方式-RGB，轮廓微调-轻微
+### KDE字体设置建议
+- 界面字体（使用调整所有字体）："Noto Sans CJK SC"，13pt
+- 等宽字体："JetBrainsMono Nerd Font Mono"
+- 启用抗锯齿处理
+- 次像素渲染方式：关闭
+- 字体轮廓微调：轻微
 
-> 字体配置参考文档： https://github.com/davgar99/arch-linux-font-improvement-guide
+> 字体配置参考文档：[Arch Linux Font Improvement Guide](https://github.com/davgar99/arch-linux-font-improvement-guide)
 
-# 主题美化
+---
+
+## 主题美化
+
+安装Orchis主题套件，打造美观统一的桌面环境，使用默认的微风主题也是可以的：
 
 ```bash
 paru -S plasma6-themes-orchis-kde-git
 sudo pacman -S kvantum tela-circle-icon-theme-all gtk-engines gtk-engine-murrine orchis-theme vimx-cursors
 ```
-全局主题改为Orchis，应用程序外观设置为kvantum，Gnome/GTK外观为Orchis，Kvantum管理器中将主题切换成Orchis，光标改为Vimix Cursors，图标改为Tela circle系列主题
 
-窗口管理-桌面特效：勾选【窗口惯性晃动】【窗口透明度】【对话框显隐过渡】并应用
+### 主题设置步骤
+1. 全局主题改为Orchis
+2. 应用程序外观设置为kvantum
+3. Gnome/GTK外观为Orchis
+4. 在Kvantum管理器中将主题切换成Orchis
+5. 光标改为Vimix Cursors
+6. 图标改为Tela circle系列主题
 
-# 安装指纹解锁支持
+### 窗口特效设置
+在"窗口管理-桌面特效"中勾选：
+- 窗口惯性晃动
+- 窗口透明度  
+- 对话框显隐过渡
 
-[参考文档](https://blog.ucatch.me/post/archlinux-use-fingerprint)
+---
 
+## 指纹解锁支持
+
+[指纹解锁配置参考文档](https://blog.ucatch.me/post/archlinux-use-fingerprint)
+
+1. 固件更新
 ```bash
-# 安装固件管理软件包
 sudo pacman -S fwupd
-# 查看电脑相关硬件设备
 fwupdmgr get-devices
-# 刷新设备版本状态
 fwupdmgr refresh --force
-# 获取更新
 fwupdmgr get-updates
-# 安装更新
 fwupdmgr update
 ```
 
+2. 检查指纹识别设备
 ```bash
-# 先检查电是否也指纹设备
-## 是否有 Fingerprint Reader 或相关字样
 sudo pacman -S usbutils
-lsusb
-
-# 安装指纹模块包
-sudo pacman -S fprintd imagemagick
-
-# 同一时间可以对指纹或密码做验证
-## 而非密码不通过再去验证指纹以及对立情况
-paru -S  pam-fprint-grosshack
+lsusb  # 检查是否有Fingerprint Reader相关设备
 ```
 
-# 安装办公软件
+3. 安装指纹识别模块
+```bash
+sudo pacman -S fprintd imagemagick
+paru -S pam-fprint-grosshack  # 支持同时验证指纹和密码
+```
+
+4. 参考上述文档配置指纹权限
+
+---
+
+## 办公软件安装
+
+### WPS Office中文版
+
+CachyOS 系统官方仓库有`wps-office`，但是该包对中文字体的支持较差，推荐安装AUR的`wps-office-cn`
 
 ```bash
-# 安装markdown编辑器
-sudo pacman -S ghostwriter
-# sudo pacman -S wps-office # 虽然cachyos的官方仓库中有wps的包，但实际使用下来发现其中文支持不太好，部分加粗的中文文字会变成黑块，最好是从AUR安装wps-office-cn
-paru -S wps-office-cn
-# 安装中文界面
-paru -S wps-office-mui-zh-cn
-# 其实安装完wps-office-cn之后，在~/.cache/paru/clone/wps-office-cn/下已经存在wps-office-mui-zh-cn的本地安装包，可以直接使用pacman -U 安装，顺便将wps-office-mime-cn也安装了
-sudo pacman -U ~/.cache/paru/clone/wps-office-cn/wps-office-m*
-# 安装字体支持
-paru -S wps-office-fonts ttf-wps-fonts
-# fcitx5输入法支持
-mkdir -p ~/.local/share/applications && cp /usr/share/applications/wps-office*.desktop ~/.local/share/applications/
+paru -S wps-office-cn wps-office-mui-zh-cn wps-office-fonts ttf-wps-fonts
+# wps-office-cn 主软件包
+# wps-office-mui-zh-cn 中文界面，可以在安装完wps-office-cn后，直接使用 pacman -U ~/.cache/paru/clone/wps-office-cn/wps-office-mui-* 安装，减少二次构建的时间
+# wps-office-fonts 方正中文字体字库
+# ttf-wps-fonts 常用的西文、符号等基础字体字库
+```
+
+### WPS的输入法支持配置
+
+默认情况下，安装完`wps-office-cn`之后，可以在程序界面使用Fcitx5输入法输入中文，但在文档编辑里面则不支持Fcitx5输入法，需要修改desktop文件，配置应用的环境变量，使其能够识别Fcitx5输入法。
+
+```bash
+mkdir -p ~/.local/share/applications
+cp /usr/share/applications/wps-office*.desktop ~/.local/share/applications/
 cd ~/.local/share/applications
 ls -1 wps-office*.desktop |xargs sed -i 's/Exec=/Exec=env XMODIFIERS="@im=fcitx" GTK_IM_MODULE="fcitx" QT_IM_MODULE="fcitx" SDL_IM_MODULE=fcitx GLFW_IM_MODULE=ibus /'
-update-desktop-database ~/.local/share/applications/
+update-desktop-database ~/.local/share/applications/ # 更新应用程序菜单
 ```
 
-# 安装zen浏览器
+### Markdown编辑器
+```bash
+sudo pacman -S ghostwriter
+```
 
+---
+
+## 其他实用软件
+
+### 浏览器
 ```bash
 sudo pacman -S zen-browser-bin
 ```
 
-# 安装Steam++，支持连接github
-
+### Steam++ (Watt Toolkit)，网络加速支持Github网页加载
 ```bash
 paru -S watt-toolkit-bin
 
-# 配置
+# 证书配置(先运行一边并点击网络加速-一键加速)
 sudo chmod a+w /etc/hosts
 sudo trust anchor --store ~/.local/share/Steam++/Plugins/Accelerator/SteamTools.Certificate.cer
 
-# 安装证书失败或者一键加速报错的解决方案
-rm -r ~/.pki/nssdb
-mkdir -p ~/.pki/nssdb
-chmod 700 ~/.pki/nssdb
-certutil -d sql:$HOME/.pki/nssdb -N
-# 此命令会创建一个新的证书数据库，并要求设置密码。完成后，重新导入证书即可
-sudo update-ca-trust
+# 解决证书失败的问题(或者点击一键加速失败的问题)
+rm -r ~/.pki/nssdb  # 删除旧的证书数据库
+mkdir -p ~/.pki/nssdb  # 创建新的证书数据库目录
+chmod 700 ~/.pki/nssdb  # 设置适当权限
+# 以下命令会创建一个新的证书数据库，并要求设置密码。完成后，重新导入证书即可
+certutil -d sql:$HOME/.pki/nssdb -N  
+sudo update-ca-trust  # 更新系统证书信任库
 ```
 
-# 安装EasyConnect
+### EasyConnect VPN连接支持
 
 ```bash
 paru -S easyconnect
-# 使程序能记住当前用户的设置
+```
+
+使程序能记住当前用户的设置
+
+```bash
 echo "{}" > "~/setting_$(whoami).json"
 sudo mv "~/setting_$(whoami).json" /usr/share/sangfor/EasyConnect/resources/conf/
 sudo chown $(whoami):$(whoami) /usr/share/sangfor/EasyConnect/resources/conf/setting_$(whoami).json
-# 若出现系统托盘图标变成浮动窗口，编辑/usr/share/sangfor/EasyConnect/resources/conf/easy_connect.json，将sys_type的值改为neokylin
+```
+
+若出现系统托盘图标变成浮动窗口，是由于`/usr/share/sangfor/EasyConnect/resources/conf/easy_connect.json`的`sys_type`的值变为`linux`了，需要修改为`neokylin`：
+```bash
 sudo set -i 's/"sys_type": ".*"/"sys_type": "neokylin"/' /usr/share/sangfor/EasyConnect/resources/conf/easy_connect.json
 ```
 
-# 安装影音软件
-
+### 影音软件
 ```bash
-sudo pacman -S feeluown-full osdlyrics vlc 
+sudo pacman -S feeluown-full osdlyrics vlc
 ```
 
-# 安装腾讯系软件
-
+### 腾讯系软件
 ```bash
-# QQ、微信、腾讯会议
 paru -S linuxqq-appimage wechat-appimage wemeet-bin
 ```
+> 注意: 不要安装`appimagelauncher`，否则微信无法安装成功
 
-> 注: 不要安装`appimagelauncher`，否则微信无法安装成功
-
-# 安装电子书阅读软件
-
+### 电子书阅读器
 ```bash
-# Readest和Koodo可以二选一
-sudo pacman -S readest
-paru -S koodo-reader-bin
+sudo pacman -S readest 
+# 或 paru -S koodo-reader-bin，本人选择readest，因为官方仓库自带，方便升级
 ```
 
-# 安装开发环境
+---
+
+## 开发环境配置
 
 ```bash
-# Code-OSS，NodeJS，Bun
-sudo pacman -S code nodejs npm bun-bin 
+sudo pacman -S code nodejs npm bun-bin
 ```
 
-# 安装磁盘工具
+---
 
+## 磁盘管理工具
 ```bash
-sudo pacman -S gparted ntfs-3g
+sudo pacman -S gparted ntfs-3g smartmontools nvme-cli
 ```
 
-# 安装虚拟机环境
+---
 
+## 虚拟机环境
 ```bash
 sudo pacman -S virt-manager virt-viewer bridge-utils openbsd-netcat qemu-desktop
-# intel GVT-g 虚拟显卡支持
+
+# Intel GVT-g虚拟显卡支持(仅限Intel显卡用户)
 sudo pacman -S libva-utils intel-gpu-tools
 paru -S gvtg_vgpu-git
-# 添加到用户组
+
+# 用户组设置(使当前用户有权限管理虚拟机)
 sudo usermod -aG libvirt $(whoami)
 sudo usermod -aG kvm $(whoami)
-sudo systemctl enable --now libvirtd.service
+
+# 启动libvirtd守护进程
+sudo systemctl enable --now libvirtd.service  # 启用并立即启动服务
+
 # 远程桌面支持
 sudo pacman -S remmina freerdp
 ```
 
+### NAT网络配置
 ```bash
-# NAT网络支持
-sudo virsh net-start default
-sudo virsh net-autostart default
-echo 'firewall_backend = "iptables"' |sudo tee -a /etc/libvirt/network.conf
-sudo systemctl enable --now iptables.service
+sudo virsh net-start default  # 启动默认网络
+sudo virsh net-autostart default  # 设置默认网络开机自启
+echo 'firewall_backend = "iptables"' |sudo tee -a /etc/libvirt/network.conf  # 设置防火墙后端
+sudo systemctl enable --now iptables.service  # 启用iptables服务
 ```
 
-> qemu-hooks脚本: https://github.com/PassthroughPOST/VFIO-Tools/blob/master/libvirt_hooks/qemu
-> 
-> hooks脚本参考：https://github.com/Thanatoslayer6/hd7730-singlegpu-passthrough
+> 虚拟机Hooks配置参考：
+> - [qemu-hooks脚本](https://github.com/PassthroughPOST/VFIO-Tools/blob/master/libvirt_hooks/qemu)
+> - [hooks脚本参考](https://github.com/Thanatoslayer6/hd7730-singlegpu-passthrough)
 
-（针对systemd-boot）修改了`/boot/loader/entries/xxx.conf`的内核启动参数后，如果以后更新系统时升级了内核，本次修改的启动参数会被覆盖，解决办法是：
-修改`/etc/sdboot-manage.conf`，在`LINUX_OPTIONS=`行中加入需要添加的启动参数。
+---
+
+### 系统启动参数持久化
+
+对于使用systemd-boot引导的系统，修改`/boot/loader/entries/xxx.conf`的内核启动参数后，系统更新时可能会被覆盖。解决方案：
+
+修改`/etc/sdboot-manage.conf`，在`LINUX_OPTIONS=`行中加入需要持久化的启动参数。

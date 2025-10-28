@@ -4,12 +4,40 @@
 
 ---
 
-## 输入法配置
+## 添加[archlinuxcn]源
 
-安装配置Fcitx5输入法框架，支持中文输入(我使用的是Rime的双拼输入法)：
+在`/etc/pacman.conf`文件末尾添加两行：
+
+```
+[archlinuxcn]
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
+```
+
+然后安装`archlinuxcn-keyring`包以导入 GPG key。
 
 ```bash
-sudo pacman -S fcitx5 fcitx5-rime fcitx5-gtk fcitx5-qt fcitx5-configtool rime-double-pinyin
+pacman -Sy archlinuxcn-keyring
+```
+
+---
+
+## 输入法配置
+
+安装配置Fcitx5输入法框架，支持中文输入(我使用的是Rime)：
+
+```bash
+sudo pacman -S fcitx5 fcitx5-rime fcitx5-gtk fcitx5-qt fcitx5-configtool
+```
+
+最近发现了一个很不错的Rime拼音输入方案——万象拼音，基于白霜词库并可使用声调筛选候选词，其Pro版本支持多种双拼方案及多种辅助码方案，使用下来很符合我的个人习惯，现已在Linux/Android/MacOS三端都用上了。
+
+该输入方案可以从AUR或者archlinuxcn源安装：
+
+```bash
+# 安装Pro版本的小鹤双拼方案+墨奇辅助码方案
+sudo pacman -S rime-wanxiang-pro-flypy rime-wanxiang-pro-data-moqi-fuzhu
+# 若仅保留万象拼音Pro方案，可以直接将wanxiang_pro_suggestion.yaml复制为default.custom.yaml，再作简单修改
+cp /usr/share/rime-data/wanxiang_pro_suggestion ~/.local/share/fcitx5/rime/default.custom.yaml
 ```
 
 ### Fcitx环境变量设置
@@ -154,7 +182,7 @@ sudo pacman -S zen-browser-bin
 ```bash
 paru -S watt-toolkit-bin
 
-# 证书配置(先运行一边并点击网络加速-一键加速)
+# 证书配置(先运行一遍并点击网络加速-一键加速)
 sudo chmod a+w /etc/hosts
 sudo trust anchor --store ~/.local/share/Steam++/Plugins/Accelerator/SteamTools.Certificate.cer
 

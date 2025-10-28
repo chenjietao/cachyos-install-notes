@@ -134,6 +134,9 @@ action = "ResetFontSize"
 live_config_reload = true
 working_directory = "None"
 import = [
+  # Alacritty主题色合集
+  # mkdir -p ~/.config/alacritty/themes
+  # git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
   "~/.config/alacritty/themes/themes/monokai_pro.toml"
 ]
 

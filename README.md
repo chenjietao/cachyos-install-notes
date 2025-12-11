@@ -2,6 +2,8 @@
 
 本文档记录了本人的CachyOS系统（KDE桌面环境）安装后的常用配置步骤，帮助本人快速搭建完整可用的桌面环境。配置内容包括输入法、字体、主题美化、办公软件等常用功能。
 
+> 备注: 随着`CachyOS`和`ArchLinux`的版本变动，部分软件包可能会被移除出官方仓库，需改为从AUR安装。
+
 ---
 
 ## 添加[archlinuxcn]源
@@ -195,6 +197,34 @@ certutil -d sql:$HOME/.pki/nssdb -N
 sudo update-ca-trust  # 更新系统证书信任库
 ```
 
+### Clash Verge
+下载资源有时候需要用到梯子（如AUR的安装资源），Watt Toolkit不太给力，可以使用Clash Verge暂时辅助一下。
+```bash
+# 从archlinuxcn源安装
+sudo pacman -S clash-verge-rev
+```
+
+规则订阅可自行在Github上寻找。
+
+安装后，若要使用tun模式，需使用Root权限运行，可以修改`Clash Verge.desktop`，使每次点击图标启动都使用Root权限运行。
+
+```bash
+cp /usr/share/applications/Clash\ Verge.desktop ~/.local/share/applications/
+vim ~/.local/share/applications/Clash\ Verge.desktop
+```
+
+将`Exec=`这一行改成下面:
+```
+Exec=xauthval=$(xauth info|head -1|awk '{print $3}') && pkexec env DISPLAY=:0 XAUTHORITY=$xauthval clash-verge %u
+```
+
+然后更新应用程序菜单
+```bash
+update-desktop-database ~/.local/share/applications/ # 更新应用程序菜单
+```
+
+> 备注: 执行 `clash-verge-service-install` 安装服务会使后台始终有一个 `clash-verge-service` 进程（重启系统后仍然会启动），而这个服务并不能使普通用户可以使用tun模式，比较鸡肋，可以使用 `clash-verge-service-uninstall` 卸载掉该服务。
+
 ### EasyConnect VPN连接支持
 
 ```bash
@@ -217,6 +247,11 @@ sudo set -i 's/"sys_type": ".*"/"sys_type": "neokylin"/' /usr/share/sangfor/Easy
 ### 影音软件
 ```bash
 sudo pacman -S feeluown-full osdlyrics vlc
+```
+
+### 局域网内文件传输
+```bash
+sudo pacman -S localsend
 ```
 
 ### 腾讯系软件
@@ -254,7 +289,6 @@ sudo pacman -S virt-manager virt-viewer bridge-utils openbsd-netcat qemu-desktop
 
 # Intel GVT-g虚拟显卡支持(仅限Intel显卡用户)
 sudo pacman -S libva-utils intel-gpu-tools
-paru -S gvtg_vgpu-git
 
 # 用户组设置(使当前用户有权限管理虚拟机)
 sudo usermod -aG libvirt $(whoami)
